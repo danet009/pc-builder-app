@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Сборка ПК — Компьютерный Мир</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f7fa; }
+        
+        .header {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb4d);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo { font-size: 28px; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            transition: 0.3s;
+        }
+        .nav a:hover { color: #fdbb4d; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; }
+        
+        h1 { text-align: center; margin-bottom: 30px; color: #1a2a6c; }
+        
+        .component-block {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .component-block label {
+            font-weight: bold;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+            color: #1a2a6c;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover { background: #b21f1f; }
+        
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .export-buttons button {
+            margin-top: 0;
+            background: #27ae60;
+        }
+        .export-buttons button:first-child { background: #e67e22; }
+        
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+            white-space: pre-line;
+            font-family: monospace;
+        }
+        #priceInfo {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        footer {
+            background: #1a2a6c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🖥️ <span>Компьютерный</span> Мир</div>
+        <div class="nav">
+            <a href="/">Главная</a>
+            <a href="/catalog">Каталог</a>
+            <a href="/builder">Сборка ПК</a>
+            {% if current_user.is_authenticated %}
+                <a href="/profile">{{ current_user.username }}</a>
+                <a href="/logout">Выйти</a>
+            {% else %}
+                <a href="/login">Войти</a>
+                <a href="/register">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>🛠️ Сборка компьютера</h1>
+
+        <form id="buildForm">
+            <div class="component-block">
+                <label>1. Процессор (CPU)</label>
+                <select name="cpu_id" required>
+                    <option value="">-- Выберите процессор --</option>
+                    {% for cpu in cpus %}
+                    <option value="{{ cpu.id }}">{{ cpu.name }} ({{ cpu.socket }}) — {{ cpu.price }}₽ ★{{ cpu.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="component-block">
+                <label>2. Материнская плата</label>
+                <select name="motherboard_id" required>
+                    <option value="">-- Выберите материнскую плату --</option>
+                    {% for mb in motherboards %}
+                    <option value="{{ mb.id }}">{{ mb.name }} ({{ mb.socket }}) — {{ mb.price }}₽ ★{{ mb.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="component-block">
+                <label>3. Оперативная память</label>
+                <select name="ram_id" required>
+                    <option value="">-- Выберите ОЗУ --</option>
+                    {% for ram in rams %}
+                    <option value="{{ ram.id }}">{{ ram.name }} ({{ ram.ram_type }}) — {{ ram.price }}₽ ★{{ ram.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="component-block">
+                <label>4. Видеокарта</label>
+                <select name="gpu_id" required>
+                    <option value="">-- Выберите видеокарту --</option>
+                    {% for gpu in gpus %}
+                    <option value="{{ gpu.id }}">{{ gpu.name }} ({{ gpu.chipset }}) — {{ gpu.price }}₽ ★{{ gpu.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="component-block">
+                <label>5. Блок питания</label>
+                <select name="psu_id" required>
+                    <option value="">-- Выберите блок питания --</option>
+                    {% for psu in psus %}
+                    <option value="{{ psu.id }}">{{ psu.name }} ({{ psu.wattage }}Вт) — {{ psu.price }}₽ ★{{ psu.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="component-block">
+                <label>6. Накопитель</label>
+                <select name="storage_id" required>
+                    <option value="">-- Выберите накопитель --</option>
+                    {% for storage in storages %}
+                    <option value="{{ storage.id }}">{{ storage.name }} ({{ storage.capacity }}ГБ) — {{ storage.price }}₽ ★{{ storage.reliability }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">🔍 Проверить совместимость</button>
+        </form>
+
+        <div class="export-buttons" id="exportButtons" style="display: none;">
+            <button id="exportPdfBtn">📄 Экспорт в PDF</button>
+            <button id="exportTxtBtn">📝 Экспорт в TXT</button>
+        </div>
+
+        <div id="result">
+            <strong>📊 Результат проверки:</strong><br>
+            <span id="compatMessage">Здесь появится результат после нажатия на кнопку.</span>
+        </div>
+
+        <div id="priceInfo">
+            💰 <strong>Итоговая цена:</strong> —<br>
+            ⭐ <strong>Средний рейтинг:</strong> —
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 «Компьютерный Мир» — Ваш надёжный помощник в сборке ПК</p>
+    </footer>
+
+    <script>
+        document.getElementById('buildForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const resultSpan = document.getElementById('compatMessage');
+            const priceDiv = document.getElementById('priceInfo');
+            const exportDiv = document.getElementById('exportButtons');
+
+            resultSpan.innerHTML = '⏳ Проверяем совместимость...';
+            resultSpan.style.color = '#3498db';
+            exportDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/check', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultSpan.innerHTML = data.message.replace(/\n/g, '<br>');
+                    resultSpan.style.color = data.compatible ? 'green' : 'red';
+                    
+                    if (data.total_price) {
+                        priceDiv.innerHTML = `💰 Итоговая цена: ${data.total_price.toLocaleString()} ₽<br>⭐ Средний рейтинг: ${data.avg_reliability} / 5.0`;
+                    }
+                    
+                    if (data.compatible) {
+                        exportDiv.style.display = 'flex';
+                        window.lastReport = data.message;
+                    }
+                } else {
+                    resultSpan.innerHTML = '❌ Ошибка при проверке';
+                    resultSpan.style.color = 'red';
+                }
+            } catch (error) {
+                resultSpan.innerHTML = '❌ Не удалось связаться с сервером';
+                resultSpan.style.color = 'red';
+            }
+        };
+
+        document.getElementById('exportPdfBtn').onclick = async () => {
+            if (!window.lastReport) return;
+            const res = await fetch('/export_pdf', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({report: window.lastReport}) });
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sbornik.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        document.getElementById('exportTxtBtn').onclick = async () => {
+            if (!window.lastReport) return;
+            const res = await fetch('/export_txt', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({report: window.lastReport}) });
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sbornik.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+    </script>
+</body>
+</html>

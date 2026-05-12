@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль — Компьютерный Мир</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f7fa; }
+        .header {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb4d);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo { font-size: 28px; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        .nav a { color: white; text-decoration: none; margin: 0 15px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; }
+        .profile-card { background: white; border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .avatar { font-size: 80px; text-align: center; margin-bottom: 20px; }
+        .info { text-align: center; }
+        .info h2 { color: #1a2a6c; margin-bottom: 10px; }
+        .info p { color: #666; margin: 5px 0; }
+        .builds-title { font-size: 24px; margin: 30px 0 20px; color: #1a2a6c; }
+        .build-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #27ae60;
+        }
+        .build-date { color: #888; font-size: 12px; margin-bottom: 10px; }
+        .build-components { font-size: 13px; color: #555; line-height: 1.6; }
+        .no-builds { text-align: center; padding: 40px; background: white; border-radius: 12px; }
+        footer {
+            background: #1a2a6c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🖥️ <span>Компьютерный</span> Мир</div>
+        <div class="nav">
+            <a href="/">Главная</a>
+            <a href="/catalog">Каталог</a>
+            <a href="/builder">Сборка ПК</a>
+            <a href="/profile">Мои сборки</a>
+            <a href="/logout">Выйти</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="avatar">👤</div>
+            <div class="

@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог — Компьютерный Мир</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; }
+        .header { background: #1a2a6c; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        .nav a { color: white; text-decoration: none; margin: 0 15px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 20px; }
+        h1 { text-align: center; color: #1a2a6c; margin-bottom: 30px; }
+        .section-title { font-size: 24px; color: #1a2a6c; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #fdbb4d; }
+        .catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-3px); }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #1a2a6c; }
+        .product-specs { font-size: 12px; color: #666; margin: 8px 0; }
+        .product-price { font-size: 18px; font-weight: bold; color: #b21f1f; margin: 10px 0; }
+        .product-rating { color: #fdbb4d; margin: 5px 0; }
+        a { text-decoration: none; color: inherit; display: block; }
+        footer { background: #1a2a6c; color: white; text-align: center; padding: 20px; margin-top: 40px; }
+        @media (max-width: 768px) { .header { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body>
+    <!-- ШАПКА СКопиРОВАНА ИЗ INDEX.HTML -->
+    <header class="header">
+    <div class="logo">🖥️ <span>Компьютерный</span> Мир</div>
+    <div class="nav">
+        <a href="/">Конфигуратор</a>
+        <a href="/catalog">Каталог</a>
+        <a href="/profile">Мои сборки</a>
+        {% if current_user.is_authenticated %}
+            <a href="/profile">{{ current_user.username }}</a>
+            <a href="/logout">Выйти</a>
+        {% else %}
+            <a href="/login">Войти</a>
+            <a href="/register">Регистрация</a>
+        {% endif %}
+    </div>
+</header>
+
+    <div class="container">
+        <h1>📦 Каталог компьютерных комплектующих</h1>
+        
+        <div class="section-title">⚙️ Процессоры ({{ cpus|length }})</div>
+        <div class="catalog">
+            {% for cpu in cpus %}
+            <a href="/product/cpu/{{ cpu.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ cpu.name }}</div>
+                    <div class="product-specs">{{ cpu.socket }} | {{ cpu.tdp }} Вт</div>
+                    <div class="product-rating">⭐ {{ cpu.reliability }}</div>
+                    <div class="product-price">{{ cpu.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">🔌 Материнские платы ({{ motherboards|length }})</div>
+        <div class="catalog">
+            {% for mb in motherboards %}
+            <a href="/product/motherboard/{{ mb.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ mb.name }}</div>
+                    <div class="product-specs">{{ mb.socket }} | {{ mb.form_factor }}</div>
+                    <div class="product-rating">⭐ {{ mb.reliability }}</div>
+                    <div class="product-price">{{ mb.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">💾 Оперативная память ({{ rams|length }})</div>
+        <div class="catalog">
+            {% for ram in rams %}
+            <a href="/product/ram/{{ ram.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ ram.name }}</div>
+                    <div class="product-specs">{{ ram.ram_type }}</div>
+                    <div class="product-rating">⭐ {{ ram.reliability }}</div>
+                    <div class="product-price">{{ ram.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">🎮 Видеокарты ({{ gpus|length }})</div>
+        <div class="catalog">
+            {% for gpu in gpus %}
+            <a href="/product/gpu/{{ gpu.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ gpu.name }}</div>
+                    <div class="product-specs">{{ gpu.chipset }} | {{ gpu.power_consumption }} Вт</div>
+                    <div class="product-rating">⭐ {{ gpu.reliability }}</div>
+                    <div class="product-price">{{ gpu.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">⚡ Блоки питания ({{ psus|length }})</div>
+        <div class="catalog">
+            {% for psu in psus %}
+            <a href="/product/psu/{{ psu.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ psu.name }}</div>
+                    <div class="product-specs">{{ psu.wattage }} Вт | {{ psu.rating }}</div>
+                    <div class="product-rating">⭐ {{ psu.reliability }}</div>
+                    <div class="product-price">{{ psu.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">💿 Накопители ({{ storages|length }})</div>
+        <div class="catalog">
+            {% for storage in storages %}
+            <a href="/product/storage/{{ storage.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ storage.name }}</div>
+                    <div class="product-specs">{{ storage.storage_type }} | {{ storage.capacity }} ГБ</div>
+                    <div class="product-rating">⭐ {{ storage.reliability }}</div>
+                    <div class="product-price">{{ storage.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">🖥️ Корпуса ({{ cases|length }})</div>
+        <div class="catalog">
+            {% for case in cases %}
+            <a href="/product/case/{{ case.id }}">
+                <div class="product-card">
+                    <div class="product-title">{{ case.name }}</div>
+                    <div class="product-specs">{{ case.form_factor }} | {{ case.fans_included }} вент.</div>
+                    <div class="product-rating">⭐ {{ case.reliability }}</div>
+                    <div class="product-price">{{ case.price }} ₽</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>© 2025 «Компьютерный Мир» — Ваш надёжный помощник в сборке ПК</footer>
+</body>
+</html>

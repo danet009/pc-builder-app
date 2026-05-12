@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои сборки — PC Builder</title>
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .build-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            background: #f9f9f9;
+        }
+        .build-card.high-profit { border-left: 5px solid #2ecc71; background: #f0fff0; }
+        .build-card.medium-profit { border-left: 5px solid #f39c12; }
+        .build-card.low-profit { border-left: 5px solid #e74c3c; }
+        .profit-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .high-profit .profit-badge { background: #2ecc71; color: white; }
+        .medium-profit .profit-badge { background: #f39c12; color: white; }
+        .low-profit .profit-badge { background: #e74c3c; color: white; }
+        .components { margin-top: 10px; padding-left: 20px; color: #555; }
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 Мои сохранённые сборки</h1>
+    <a href="/">← На главную</a>
+    
+    {% if builds %}
+        {% for item in builds %}
+            {% set build = item.build %}
+            {% set cpu = item.cpu %}
+            {% set mb = item.mb %}
+            {% set ram = item.ram %}
+            {% set gpu = item.gpu %}
+            {% set psu = item.psu %}
+            {% set storage = item.storage %}
+            
+            {% set profit_class = 'high-profit' if build.profit_score >= 70 else 'medium-profit' if build.profit_score >= 40 else 'low-profit' %}
+            
+            <div class="build-card {{ profit_class }}">
+                <span class="profit-badge">
+                    ⭐ Выгодность: {{ build.profit_score }}/100
+                </span>
+                <span style="float:right; font-size:12px; color:#888;">{{ build.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                <h3>{{ build.name }}</h3>
+                <div class="components">
+                    <strong>💰 Итоговая цена:</strong> {{ build.total_price|round|int }} ₽<br>
+                    <strong>⭐ Рейтинг надёжности:</strong> {{ build.avg_reliability }}/5<br>
+                    <strong>⚡ Энергопотребление:</strong> {{ build.total_power }} Вт<br>
+                    <strong>🖥️ Состав:</strong><br>
+                    • CPU: {{ cpu.name if cpu else '?' }}<br>
+                    • Материнская плата: {{ mb.name if mb else '?' }}<br>
+                    • ОЗУ: {{ ram.name if ram else '?' }}<br>
+                    • Видеокарта: {{ gpu.name if gpu else '?' }}<br>
+                    • БП: {{ psu.name if psu else '?' }}<br>
+                    • Накопитель: {{ storage.name if storage else '?' }}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>😢 У вас пока нет сохранённых сборок. Соберите и сохраните свой первый ПК!</p>
+    {% endif %}
+</body>
+</html>

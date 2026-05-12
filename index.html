@@ -1,0 +1,679 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конфигуратор ПК — Компьютерный Мир</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; }
+        
+        .header {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb4d);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 28px; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .nav a:hover { color: #fdbb4d; }
+        
+        .search-bar {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+        }
+        .search-bar input {
+            width: 400px;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .categories {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            background: none;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 20px;
+        }
+        .category-btn:hover { background: #f0f0f0; }
+        .category-btn.active {
+            background: #1a2a6c;
+            color: white;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            gap: 30px;
+        }
+        
+        .catalog-panel {
+            flex: 3;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fdbb4d;
+        }
+        .catalog-header h2 { color: #1a2a6c; font-size: 24px; }
+        .product-count { color: #666; font-size: 14px; }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            transition: 0.3s;
+            background: white;
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #1a2a6c; }
+        .product-specs { font-size: 12px; color: #555; margin: 8px 0; line-height: 1.5; }
+        .product-price { font-weight: bold; color: #b21f1f; font-size: 20px; margin: 10px 0; }
+        .product-rating { color: #fdbb4d; margin: 5px 0; font-size: 13px; }
+        .add-btn {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 12px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .add-btn:hover { background: #b21f1f; }
+        
+        .build-panel {
+            flex: 2;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .build-panel h2 { 
+            color: #1a2a6c; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            border-bottom: 2px solid #fdbb4d;
+            font-size: 22px;
+        }
+        .selected-component {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .selected-component .remove { 
+            color: #b21f1f; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .total-price { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #1a2a6c; 
+            margin: 20px 0; 
+            text-align: center;
+            background: #e8f4fd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .check-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+        .check-btn:hover { background: #219a52; }
+        .clear-btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .clear-btn:hover { background: #d35400; }
+        .result { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #e8f4fd; 
+            border-radius: 8px; 
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+        
+        footer {
+            background: #1a2a6c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .header { flex-direction: column; gap: 10px; text-align: center; }
+            .search-bar input { width: 90%; }
+            .products-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🖥️ <span>Компьютерный</span> Мир</div>
+        <div class="nav">
+            <a href="/">Конфигуратор</a>
+            <a href="/catalog">Каталог</a>
+            <a href="/profile">Мои сборки</a>
+            {% if current_user.is_authenticated %}
+                <a href="/profile">{{ current_user.username }}</a>
+                <a href="/logout">Выйти</a>
+            {% else %}
+                <a href="/login">Войти</a>
+                <a href="/register">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск комплектующих...">
+    </div>
+
+    <div class="categories" id="categories">
+        <button class="category-btn active" data-cat="all">Все комплектующие</button>
+        <button class="category-btn" data-cat="cpu">Процессоры</button>
+        <button class="category-btn" data-cat="motherboard">Материнские платы</button>
+        <button class="category-btn" data-cat="ram">Оперативная память</button>
+        <button class="category-btn" data-cat="gpu">Видеокарты</button>
+        <button class="category-btn" data-cat="psu">Блоки питания</button>
+        <button class="category-btn" data-cat="storage">Накопители</button>
+        <button class="category-btn" data-cat="case">Корпуса</button>
+    </div>
+
+    <div class="container">
+        <div class="catalog-panel">
+            <div class="catalog-header">
+                <h2 id="categoryTitle">Все комплектующие</h2>
+                <span class="product-count" id="productCount"></span>
+            </div>
+            <div id="productsList" class="products-grid"></div>
+        </div>
+
+        <div class="build-panel">
+            <h2>🛒 Моя сборка</h2>
+            <div id="selectedComponents"></div>
+            <div class="total-price" id="totalPrice">0 ₽</div>
+            <button class="check-btn" id="checkCompatibility">✅ Проверить совместимость</button>
+            <button class="clear-btn" id="clearBuild">🗑️ Очистить сборку</button>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 «Компьютерный Мир» — Ваш надёжный помощник в сборке ПК</p>
+        <p style="margin-top: 10px;">📞 Контактная информация: info@computerworld.ru | +7 (495) 123-45-67</p>
+    </footer>
+
+    <script>
+        // Данные из Flask
+        const cpus = {{ cpus | tojson }};
+        const motherboards = {{ motherboards | tojson }};
+        const rams = {{ rams | tojson }};
+        const gpus = {{ gpus | tojson }};
+        const psus = {{ psus | tojson }};
+        const storages = {{ storages | tojson }};
+        const cases = {{ cases | tojson }};
+
+        // Полные данные всех продуктов (для отображения в каталоге)
+        let allProducts = [
+            ...cpus.map(p => ({ ...p, typeName: 'Процессор' })),
+            ...motherboards.map(p => ({ ...p, typeName: 'Материнская плата' })),
+            ...rams.map(p => ({ ...p, typeName: 'ОЗУ' })),
+            ...gpus.map(p => ({ ...p, typeName: 'Видеокарта' })),
+            ...psus.map(p => ({ ...p, typeName: 'Блок питания' })),
+            ...storages.map(p => ({ ...p, typeName: 'Накопитель' })),
+            ...cases.map(p => ({ ...p, typeName: 'Корпус' }))
+        ];
+
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let selectedBuild = {
+            cpu: null, motherboard: null, ram: null, gpu: null, psu: null, storage: null, case: null
+        };
+
+        // =========================================================
+        // ФУНКЦИИ ФИЛЬТРАЦИИ СОВМЕСТИМЫХ КОМПОНЕНТОВ
+        // =========================================================
+        
+        // Получить совместимые материнские платы для выбранного процессора
+        function getCompatibleMotherboards(cpuSocket) {
+            if (!cpuSocket) return motherboards;
+            return motherboards.filter(mb => mb.socket === cpuSocket);
+        }
+        
+        // Получить совместимую память для выбранной материнской платы
+        function getCompatibleRAM(mbSocket, selectedRAMType = null) {
+            if (!mbSocket) return rams;
+            // AM5 требует DDR5, LGA1700 поддерживает DDR4 и DDR5
+            if (mbSocket === 'AM5') {
+                let filtered = rams.filter(ram => ram.ram_type === 'DDR5');
+                if (selectedRAMType && selectedRAMType !== 'DDR5') return [];
+                return filtered;
+            }
+            return rams; // LGA1700 и другие
+        }
+        
+        // Получить подходящие корпуса для материнской платы
+        function getCompatibleCases(mbFormFactor) {
+            if (!mbFormFactor) return cases;
+            return cases.filter(c => c.form_factor.includes(mbFormFactor));
+        }
+        
+        // Получить подходящие блоки питания (по мощности)
+        function getCompatiblePSUs(cpuTdp, gpuPower) {
+            if (!cpuTdp && !gpuPower) return psus;
+            let requiredPower = (cpuTdp || 65) + (gpuPower || 150) + 50;
+            return psus.filter(psu => psu.wattage >= requiredPower);
+        }
+        
+        // =========================================================
+        // ОБНОВЛЕНИЕ ВСЕХ СПИСКОВ НА ОСНОВЕ ВЫБРАННЫХ КОМПОНЕНТОВ
+        // =========================================================
+        
+        function updateCompatibleOptions() {
+            const cpuSelect = document.getElementById('cpuSelect');
+            const mbSelect = document.getElementById('motherboardSelect');
+            const ramSelect = document.getElementById('ramSelect');
+            const gpuSelect = document.getElementById('gpuSelect');
+            const psuSelect = document.getElementById('psuSelect');
+            const caseSelect = document.getElementById('caseSelect');
+            
+            const selectedCpu = selectedBuild.cpu;
+            const selectedMb = selectedBuild.motherboard;
+            const selectedRam = selectedBuild.ram;
+            const selectedGpu = selectedBuild.gpu;
+            
+            // Получаем совместимые материнские платы
+            let compatibleMBs = motherboards;
+            if (selectedCpu) {
+                compatibleMBs = getCompatibleMotherboards(selectedCpu.socket);
+            }
+            
+            // Получаем совместимую память
+            let compatibleRAMs = rams;
+            if (selectedMb) {
+                compatibleRAMs = getCompatibleRAM(selectedMb.socket, selectedRam?.ram_type);
+            }
+            
+            // Получаем совместимые корпуса
+            let compatibleCases = cases;
+            if (selectedMb) {
+                compatibleCases = getCompatibleCases(selectedMb.form_factor);
+            }
+            
+            // Получаем совместимые БП
+            let compatiblePSUs = psus;
+            if (selectedCpu || selectedGpu) {
+                compatiblePSUs = getCompatiblePSUs(selectedCpu?.tdp, selectedGpu?.power_consumption);
+            }
+            
+            // Обновляем выпадающие списки (только для наглядности, без изменения selectedBuild)
+            if (cpuSelect) {
+                updateSelectOptions(cpuSelect, cpus, selectedCpu?.id);
+            }
+            if (mbSelect) {
+                updateSelectOptions(mbSelect, compatibleMBs, selectedMb?.id);
+            }
+            if (ramSelect) {
+                updateSelectOptions(ramSelect, compatibleRAMs, selectedRam?.id);
+            }
+            if (gpuSelect) {
+                updateSelectOptions(gpuSelect, gpus, selectedGpu?.id);
+            }
+            if (psuSelect) {
+                updateSelectOptions(psuSelect, compatiblePSUs, selectedBuild.psu?.id);
+            }
+            if (caseSelect) {
+                updateSelectOptions(caseSelect, compatibleCases, selectedBuild.case?.id);
+            }
+        }
+        
+        function updateSelectOptions(selectElement, items, selectedId) {
+            if (!selectElement) return;
+            const currentValue = selectElement.value;
+            selectElement.innerHTML = '<option value="">-- Выберите --</option>';
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} — ${item.price}₽ ★${item.reliability}`;
+                if (item.id === selectedId || (selectedId === null && currentValue == item.id)) {
+                    option.selected = true;
+                }
+                selectElement.appendChild(option);
+            });
+        }
+        
+        // =========================================================
+        // ОСНОВНЫЕ ФУНКЦИИ
+        // =========================================================
+        
+        function getDetailedSpecs(p) {
+            if (p.type === 'cpu') return `🔌 ${p.socket} | ⚡ ${p.tdp} Вт`;
+            if (p.type === 'motherboard') return `🔌 ${p.socket} | 📏 ${p.form_factor}`;
+            if (p.type === 'ram') return `💾 ${p.ram_type}`;
+            if (p.type === 'gpu') return `🎮 ${p.chipset} | ⚡ ${p.power_consumption} Вт | 📏 ${p.length} мм`;
+            if (p.type === 'psu') return `⚡ ${p.wattage} Вт | 🏅 ${p.rating}`;
+            if (p.type === 'storage') return `💿 ${p.storage_type} | 📦 ${p.capacity} ГБ`;
+            if (p.type === 'case') return `📏 ${p.form_factor} | 🌀 ${p.fans_included} вент.`;
+            return '';
+        }
+        
+        function renderCatalog() {
+            let filtered = allProducts.filter(p => {
+                if (currentCategory !== 'all' && p.type !== currentCategory) return false;
+                if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+                return true;
+            });
+            
+            document.getElementById('productCount').innerText = `Найдено: ${filtered.length}`;
+            const container = document.getElementById('productsList');
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:50px;">🔍 Товары не найдены</div>';
+                return;
+            }
+            container.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-specs">${getDetailedSpecs(p)}</div>
+                    <div class="product-price">${p.price.toLocaleString()} ₽</div>
+                    <div class="product-rating">⭐ ${p.reliability} / 5</div>
+                    <button class="add-btn" onclick="addToBuild('${p.type}', ${p.id})">➕ Добавить в сборку</button>
+                </div>
+            `).join('');
+        }
+        
+        function findProduct(type, id) {
+            return allProducts.find(p => p.type === type && p.id === id);
+        }
+        
+        async function addToBuild(type, id) {
+            const product = findProduct(type, id);
+            if (!product) return;
+            
+            // Обновляем выбранный компонент
+            selectedBuild[type] = product;
+            
+            // Обновляем совместимые опции в выпадающих списках
+            updateCompatibleOptions();
+            
+            // Обновляем панель сборки
+            updateBuildPanel();
+            
+            // Перерисовываем каталог
+            renderCatalog();
+        }
+        
+        function removeFromBuild(type) {
+            selectedBuild[type] = null;
+            updateCompatibleOptions();
+            updateBuildPanel();
+            renderCatalog();
+        }
+        
+        function updateBuildPanel() {
+            const components = [
+                { type: 'cpu', name: 'Процессор', icon: '⚙️' },
+                { type: 'motherboard', name: 'Материнская плата', icon: '🔌' },
+                { type: 'ram', name: 'ОЗУ', icon: '💾' },
+                { type: 'gpu', name: 'Видеокарта', icon: '🎮' },
+                { type: 'psu', name: 'Блок питания', icon: '⚡' },
+                { type: 'storage', name: 'Накопитель', icon: '💿' },
+                { type: 'case', name: 'Корпус', icon: '🖥️' }
+            ];
+            let total = 0;
+            const container = document.getElementById('selectedComponents');
+            container.innerHTML = components.map(comp => {
+                const item = selectedBuild[comp.type];
+                if (item) {
+                    total += item.price;
+                    return `
+                        <div class="selected-component">
+                            <span>${comp.icon} ${comp.name}: <strong>${item.name}</strong><br><small>${item.price.toLocaleString()} ₽ ⭐${item.reliability}</small></span>
+                            <span class="remove" onclick="removeFromBuild('${comp.type}')">✖</span>
+                        </div>
+                    `;
+                } else {
+                    return `<div class="selected-component" style="color:#999;"><span>${comp.icon} ${comp.name}: <em>не выбран</em></span></div>`;
+                }
+            }).join('');
+            document.getElementById('totalPrice').innerHTML = `${total.toLocaleString()} ₽`;
+        }
+        
+        // Обработчики событий для выпадающих списков (чтобы синхронизировать выбранные компоненты)
+        function bindSelectEvents() {
+            const cpuSelect = document.getElementById('cpuSelect');
+            const mbSelect = document.getElementById('motherboardSelect');
+            const ramSelect = document.getElementById('ramSelect');
+            const gpuSelect = document.getElementById('gpuSelect');
+            const psuSelect = document.getElementById('psuSelect');
+            const storageSelect = document.getElementById('storageSelect');
+            const caseSelect = document.getElementById('caseSelect');
+            
+            if (cpuSelect) {
+                cpuSelect.onchange = async () => {
+                    const id = parseInt(cpuSelect.value);
+                    const product = findProduct('cpu', id);
+                    if (product) {
+                        selectedBuild.cpu = product;
+                        updateCompatibleOptions();
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (mbSelect) {
+                mbSelect.onchange = async () => {
+                    const id = parseInt(mbSelect.value);
+                    const product = findProduct('motherboard', id);
+                    if (product) {
+                        selectedBuild.motherboard = product;
+                        updateCompatibleOptions();
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (ramSelect) {
+                ramSelect.onchange = async () => {
+                    const id = parseInt(ramSelect.value);
+                    const product = findProduct('ram', id);
+                    if (product) {
+                        selectedBuild.ram = product;
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (gpuSelect) {
+                gpuSelect.onchange = async () => {
+                    const id = parseInt(gpuSelect.value);
+                    const product = findProduct('gpu', id);
+                    if (product) {
+                        selectedBuild.gpu = product;
+                        updateCompatibleOptions();
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (psuSelect) {
+                psuSelect.onchange = async () => {
+                    const id = parseInt(psuSelect.value);
+                    const product = findProduct('psu', id);
+                    if (product) {
+                        selectedBuild.psu = product;
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (storageSelect) {
+                storageSelect.onchange = async () => {
+                    const id = parseInt(storageSelect.value);
+                    const product = findProduct('storage', id);
+                    if (product) {
+                        selectedBuild.storage = product;
+                        updateBuildPanel();
+                    }
+                };
+            }
+            if (caseSelect) {
+                caseSelect.onchange = async () => {
+                    const id = parseInt(caseSelect.value);
+                    const product = findProduct('case', id);
+                    if (product) {
+                        selectedBuild.case = product;
+                        updateBuildPanel();
+                    }
+                };
+            }
+        }
+        
+        // Категории
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                const titles = {
+                    'all': 'Все комплектующие',
+                    'cpu': 'Процессоры',
+                    'motherboard': 'Материнские платы',
+                    'ram': 'Оперативная память',
+                    'gpu': 'Видеокарты',
+                    'psu': 'Блоки питания',
+                    'storage': 'Накопители',
+                    'case': 'Корпуса'
+                };
+                document.getElementById('categoryTitle').innerText = titles[currentCategory] || 'Комплектующие';
+                renderCatalog();
+            };
+        });
+        
+        // Поиск
+        document.getElementById('searchInput').oninput = (e) => {
+            searchQuery = e.target.value;
+            renderCatalog();
+        };
+        
+        // Проверка совместимости
+        document.getElementById('checkCompatibility').onclick = async () => {
+            const cpu = selectedBuild.cpu;
+            const mb = selectedBuild.motherboard;
+            const ram = selectedBuild.ram;
+            const gpu = selectedBuild.gpu;
+            const psu = selectedBuild.psu;
+            const storage = selectedBuild.storage;
+            const case_ = selectedBuild.case;
+            
+            if (!cpu || !mb || !ram || !gpu || !psu || !storage || !case_) {
+                document.getElementById('result').innerHTML = '<span style="color:red;">⚠️ Выберите все компоненты для сборки!</span>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('cpu_id', cpu.id);
+            formData.append('motherboard_id', mb.id);
+            formData.append('ram_id', ram.id);
+            formData.append('gpu_id', gpu.id);
+            formData.append('psu_id', psu.id);
+            formData.append('storage_id', storage.id);
+            formData.append('case_id', case_.id);
+            
+            try {
+                const response = await fetch('/check', { method: 'POST', body: formData });
+                const data = await response.json();
+                document.getElementById('result').innerHTML = data.message.replace(/\n/g, '<br>');
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<span style="color:red;">❌ Ошибка при проверке совместимости</span>';
+            }
+        };
+        
+        // Очистка сборки
+        document.getElementById('clearBuild').onclick = () => {
+            selectedBuild = { cpu: null, motherboard: null, ram: null, gpu: null, psu: null, storage: null, case: null };
+            updateCompatibleOptions();
+            updateBuildPanel();
+            document.getElementById('result').innerHTML = '';
+        };
+        
+        // Инициализация
+        renderCatalog();
+        updateBuildPanel();
+        bindSelectEvents();
+        updateCompatibleOptions();
+    </script>
+</body>
+</html>
